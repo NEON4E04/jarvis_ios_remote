@@ -1,0 +1,39 @@
+name: jarvis_ios_remote
+description: JARVIS Remote Control for iPhone
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Сетевые подключения
+  http: ^1.1.2
+  web_socket_channel: ^2.4.0
+
+  # Голосовой ввод (ВАЖНО для iPhone)
+  speech_to_text: ^6.6.0
+
+  # UI компоненты
+  provider: ^6.0.0
+  flutter_colorpicker: ^1.0.0
+
+  # Хранение настроек
+  shared_preferences: ^2.2.2
+
+  # Анимации
+  flutter_animate: ^4.5.0
+
+  # Иконки
+  cupertino_icons: ^1.0.6
+  font_awesome_flutter: ^10.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

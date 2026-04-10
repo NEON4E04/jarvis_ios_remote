@@ -9,32 +9,38 @@ workflows:
       - name: Clean project
         script: |
           flutter clean
-          rm -f ios/Podfile.lock
-          rm -rf ios/Pods
+          cd ios
+          rm -rf Pods
+          rm -rf Podfile.lock
+          cd ..
 
-      - name: Get dependencies
+      - name: Install dependencies
         script: |
           flutter pub get
           cd ios
-          pod install --repo-update
+          pod install
           cd ..
 
-      - name: Build IPA
+      - name: Build iOS app
         script: |
-          # Собираем приложение
           flutter build ios --release --no-codesign
-          
-          # Создаем правильную структуру IPA
+
+      - name: Create IPA file
+        script: |
+          # Переходим в папку со сборкой
           cd build/ios/iphoneos
-          mkdir -p Payload
-          cp -r Runner.app Payload/
           
-          # Создаем IPA файл
-          zip -r JARVIS_Remote.ipa Payload
+          # Создаем папку Payload и копируем приложение
+          mkdir Payload
+          cp -R Runner.app Payload/
           
-          # Копируем в корень для артефактов
-          cp JARVIS_Remote.ipa ../../../
-          cd ../../../
+          # Создаем IPA (это просто zip с расширением .ipa)
+          zip -r JARVIS.ipa Payload/
+          
+          # Копируем в корневую папку проекта
+          cp JARVIS.ipa ../../../../
+          
+          echo "✅ IPA файл создан: JARVIS.ipa"
 
     artifacts:
-      - JARVIS_Remote.ipa
+      - JARVIS.ipa

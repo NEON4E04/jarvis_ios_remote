@@ -6,54 +6,35 @@ workflows:
       flutter: stable
       xcode: latest
     scripts:
-      - name: Clean and get dependencies
+      - name: Clean project
         script: |
           flutter clean
-          flutter pub get
+          rm -f ios/Podfile.lock
+          rm -rf ios/Pods
 
-      - name: Install CocoaPods dependencies
+      - name: Get dependencies
         script: |
+          flutter pub get
           cd ios
-          pod install --repo-update || pod install
+          pod install --repo-update
           cd ..
 
       - name: Build IPA
         script: |
+          # Собираем приложение
           flutter build ios --release --no-codesign
+          
+          # Создаем правильную структуру IPA
           cd build/ios/iphoneos
-          mkdir Payload
+          mkdir -p Payload
           cp -r Runner.app Payload/
+          
+          # Создаем IPA файл
           zip -r JARVIS_Remote.ipa Payload
-          cd ../../..
-          cp build/ios/iphoneos/JARVIS_Remote.ipa .
-    artifacts:
-      - JARVIS_Remote.ipaworkflows:
-  ios-build:
-    name: iOS Build
-    max_build_duration: 60
-    environment:
-      flutter: stable
-      xcode: latest
-    scripts:
-      - name: Clean and get dependencies
-        script: |
-          flutter clean
-          flutter pub get
+          
+          # Копируем в корень для артефактов
+          cp JARVIS_Remote.ipa ../../../
+          cd ../../../
 
-      - name: Install CocoaPods dependencies
-        script: |
-          cd ios
-          pod install --repo-update || pod install
-          cd ..
-
-      - name: Build IPA
-        script: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cp -r Runner.app Payload/
-          zip -r JARVIS_Remote.ipa Payload
-          cd ../../..
-          cp build/ios/iphoneos/JARVIS_Remote.ipa .
     artifacts:
       - JARVIS_Remote.ipa
